@@ -23,3 +23,8 @@
 ```bash
     php bot.php reply <nick> <tweet_id>
 ```
+
+## Screenshots
+
+![No command](/screenshots/no_command.png)
+![Command cats](/screenshots/command_cats.png)
