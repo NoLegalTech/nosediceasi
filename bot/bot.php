@@ -15,7 +15,7 @@ function get_all_tweets_in_db() {
 
 	$database = $firebase->getDatabase();
 
-	return $database->getReference('/')->getValue();
+	return $database->getReference('tweets')->getValue();
 }
 
 function show_db($config) {
@@ -64,8 +64,8 @@ function reply($config, $nick, $tid) {
 	$all_tweets = get_all_tweets_in_db();
 
 	$found = false;
-	foreach($all_tweets as $tweet) {
-		if ($tweet['id'] == $tid) {
+	foreach($all_tweets as $id => $tweet) {
+		if ($id == $tid) {
 			$found = true;
 		}
 	}
