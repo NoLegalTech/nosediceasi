@@ -5,7 +5,7 @@ require __DIR__.'/vendor/autoload.php';
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 
-function show_db($config) {
+function get_all_tweets_in_db() {
 	$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-credentials.json');
 
 	$firebase = (new Factory)
@@ -15,7 +15,11 @@ function show_db($config) {
 
 	$database = $firebase->getDatabase();
 
-	print_r($database->getReference('tweet_1/nickname')->getValue());
+	return $database->getReference('/')->getValue();
+}
+
+function show_db($config) {
+	print_r(get_all_tweets_in_db());
 }
 
 function show_last_killed_cats($config) {
@@ -57,6 +61,20 @@ function show_commands($script) {
 }
 
 function reply($config, $nick, $tid) {
+	$all_tweets = get_all_tweets_in_db();
+
+	$found = false;
+	foreach($all_tweets as $tweet) {
+		if ($tweet['id'] == $tid) {
+			$found = true;
+		}
+	}
+
+	if ($found) {
+		echo "Won't reply. Already replied.";
+		return;
+	}
+
 	$url = 'https://api.twitter.com/1.1/statuses/update.json';
 	$requestMethod = 'POST';
 
