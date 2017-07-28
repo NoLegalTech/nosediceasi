@@ -5,7 +5,7 @@ require __DIR__.'/vendor/autoload.php';
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 
-function get_all_tweets_in_db() {
+function get_db() {
 	$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-credentials.json');
 
 	$firebase = (new Factory)
@@ -13,9 +13,20 @@ function get_all_tweets_in_db() {
 		->withDatabaseUri('https://nosediceasi-569f3.firebaseio.com')
 		->create();
 
-	$database = $firebase->getDatabase();
+	return $firebase->getDatabase();
+}
 
-	return $database->getReference('tweets')->getValue();
+function get_all_tweets_in_db() {
+	return get_db()->getReference('tweets')->getValue();
+}
+
+function store_tweet_in_db($tid, $nick) {
+	get_db()->getReference("tweets")
+		->push([
+			'id'      => $tid,
+			'nick'    => $nick,
+			'message' => ""
+		]);
 }
 
 function show_db($config) {
@@ -64,8 +75,8 @@ function reply($config, $nick, $tid) {
 	$all_tweets = get_all_tweets_in_db();
 
 	$found = false;
-	foreach($all_tweets as $id => $tweet) {
-		if ($id == $tid) {
+	foreach($all_tweets as $tweet) {
+		if ($tweet['id'] == $tid) {
 			$found = true;
 		}
 	}
@@ -92,6 +103,8 @@ function reply($config, $nick, $tid) {
 	echo $twitter->buildOauth($url, $requestMethod)
 		->setPostfields($postfields)
 		->performRequest();
+
+	store_tweet_in_db($tid, $nick);
 }
 
 $script = $argv[0];
