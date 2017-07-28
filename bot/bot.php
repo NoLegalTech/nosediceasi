@@ -1,5 +1,22 @@
 <?php
 require_once('TwitterAPIExchange.php');
+require __DIR__.'/vendor/autoload.php';
+
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
+
+function show_db($config) {
+	$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-credentials.json');
+
+	$firebase = (new Factory)
+		->withServiceAccount($serviceAccount)
+		->withDatabaseUri('https://nosediceasi-569f3.firebaseio.com')
+		->create();
+
+	$database = $firebase->getDatabase();
+
+	print_r($database->getReference('tweet_1/nickname')->getValue());
+}
 
 function show_last_killed_cats($config) {
 	$url = 'https://api.twitter.com/1.1/search/tweets.json';
@@ -34,6 +51,7 @@ function show_last_killed_cats($config) {
 }
 
 function show_commands($script) {
+	echo "    php ".$script." db                 \033[01;33m  - shows database contents\033[0m\n";
 	echo "    php ".$script." cats               \033[01;33m  - shows last killed cats\033[0m\n";
 	echo "    php ".$script." reply {nick} {tid} \033[01;33m  - replies tweet {tid} of user {nick}\033[0m\n";
 }
@@ -69,6 +87,9 @@ if (count($argv) <= 1) {
 
 $command = $argv[1];
 switch($command) {
+	case "db":
+		show_db($config);
+		break;
 	case "cats":
 		show_last_killed_cats($config);
 		break;
