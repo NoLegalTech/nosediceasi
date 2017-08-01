@@ -1,5 +1,37 @@
 <?php
 require_once('TwitterAPIExchange.php');
+require __DIR__.'/vendor/autoload.php';
+
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
+
+function get_db() {
+	$serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-credentials.json');
+
+	$firebase = (new Factory)
+		->withServiceAccount($serviceAccount)
+		->withDatabaseUri('https://nosediceasi-569f3.firebaseio.com')
+		->create();
+
+	return $firebase->getDatabase();
+}
+
+function get_all_tweets_in_db() {
+	return get_db()->getReference('tweets')->getValue();
+}
+
+function store_tweet_in_db($tid, $nick) {
+	get_db()->getReference("tweets")
+		->push([
+			'id'      => $tid,
+			'nick'    => $nick,
+			'message' => ""
+		]);
+}
+
+function show_db($config) {
+	print_r(get_all_tweets_in_db());
+}
 
 function show_last_killed_cats($config) {
 	$url = 'https://api.twitter.com/1.1/search/tweets.json';
@@ -34,11 +66,26 @@ function show_last_killed_cats($config) {
 }
 
 function show_commands($script) {
+	echo "    php ".$script." db                 \033[01;33m  - shows database contents\033[0m\n";
 	echo "    php ".$script." cats               \033[01;33m  - shows last killed cats\033[0m\n";
 	echo "    php ".$script." reply {nick} {tid} \033[01;33m  - replies tweet {tid} of user {nick}\033[0m\n";
 }
 
 function reply($config, $nick, $tid) {
+	$all_tweets = get_all_tweets_in_db();
+
+	$found = false;
+	foreach($all_tweets as $tweet) {
+		if ($tweet['id'] == $tid) {
+			$found = true;
+		}
+	}
+
+	if ($found) {
+		echo "Won't reply. Already replied.";
+		return;
+	}
+
 	$url = 'https://api.twitter.com/1.1/statuses/update.json';
 	$requestMethod = 'POST';
 
@@ -56,6 +103,8 @@ function reply($config, $nick, $tid) {
 	echo $twitter->buildOauth($url, $requestMethod)
 		->setPostfields($postfields)
 		->performRequest();
+
+	store_tweet_in_db($tid, $nick);
 }
 
 $script = $argv[0];
@@ -69,6 +118,9 @@ if (count($argv) <= 1) {
 
 $command = $argv[1];
 switch($command) {
+	case "db":
+		show_db($config);
+		break;
 	case "cats":
 		show_last_killed_cats($config);
 		break;
