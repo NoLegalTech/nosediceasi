@@ -2,12 +2,29 @@
 
 . ftp-credentials
 
-ftp -n -v $HOST << EOT
-ascii
-user $USER $PASSWD
-prompt
-cd www/querella_criminal
-mput *.jpg *.html 
-bye
+
+function deployFolder(){
+	local_folder=$1
+	remote_folder="www/querella_criminal/$local_folder"
+
+	cd $local_folder
+
+	ftp -n -v $HOST << EOT
+	ascii
+	user $USER $PASSWD
+	prompt
+        mkdir $remote_folder
+	cd $remote_folder
+	mput *.jpg *.html *.png
+	bye
 EOT
 
+ 	cd -
+}
+
+folders=$(find . -type d)
+
+for folder in $folders
+do
+	deployFolder $folder
+done
