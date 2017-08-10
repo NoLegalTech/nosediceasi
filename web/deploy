@@ -1,0 +1,13 @@
+#!/bin/bash
+
+. ftp-credentials
+
+ftp -n -v $HOST << EOT
+ascii
+user $USER $PASSWD
+prompt
+cd www/querella_criminal
+mput *.jpg *.html 
+bye
+EOT
+

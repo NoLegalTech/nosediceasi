@@ -2,3 +2,4 @@ config.php
 vendor/
 composer.lock
 firebase-credentials.json
+ftp-credentials
