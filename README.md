@@ -24,7 +24,15 @@
     php bot.php cats
 ```
 
-5) Reply to one of those killers:
+5) Set up your firebase config file by copying it from firebase-credentials.json.ini:
+
+```bash
+    cp firebase-credentials.json.ini firebase-credentials.json
+```
+
+6) Edit the firebase-credentials.json file and replace all `FILL_ME` values with the appropriate values.
+
+7) Reply to one of those killers:
 
 ```bash
     php bot.php reply <nick> <tweet_id>
