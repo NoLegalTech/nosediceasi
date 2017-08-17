@@ -12,13 +12,19 @@
 
 2) Edit the config.php file and replace all `FILL_ME` values with the appropriate values.
 
-3) See last killed cats:
+3) Update project dependencies:
+
+```bash
+    composer install
+```
+
+4) See last killed cats:
 
 ```bash
     php bot.php cats
 ```
 
-4) Reply to one of those killers:
+5) Reply to one of those killers:
 
 ```bash
     php bot.php reply <nick> <tweet_id>
