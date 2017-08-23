@@ -35,7 +35,7 @@ function show_db($config) {
 
 function show_last_killed_cats($config) {
 	$url = 'https://api.twitter.com/1.1/search/tweets.json';
-	$getfield = '?q=querella%20criminal';
+	$getfield = '?q="querella%20criminal"';
 	$requestMethod = 'GET';
 
 	$twitter = new TwitterAPIExchange(array(
