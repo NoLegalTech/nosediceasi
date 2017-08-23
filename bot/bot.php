@@ -35,7 +35,7 @@ function show_db($config) {
 
 function show_last_killed_cats($config) {
 	$url = 'https://api.twitter.com/1.1/search/tweets.json';
-	$getfield = '?q=querella%20criminal';
+	$getfield = '?q="querella%20criminal"';
 	$requestMethod = 'GET';
 
 	$twitter = new TwitterAPIExchange(array(
@@ -51,17 +51,19 @@ function show_last_killed_cats($config) {
 	foreach($results->statuses as $tweet) {
 		$nick = $tweet->user->screen_name;
 		$status = $tweet->text;
-		$coloured_status = preg_replace(
-			"/(querella)/i",
-			"\033[01;31m".'${1}'."\033[0m",
+		if (stripos($status, "querella criminal") !== false) {
 			$coloured_status = preg_replace(
-				"/(criminal)/i",
+				"/(querella)/i",
 				"\033[01;31m".'${1}'."\033[0m",
-				$status
-			)
-		);
-		$tid = $tweet->id_str;
-		echo " \033[01;37m@${nick}\033[0m said: \033[01;32m\"${coloured_status}\033[0m\"\n     (\033[38;5;14m\033[4mhttps://twitter.com/${nick}/status/${tid}\033[0m)\n\n";
+				$coloured_status = preg_replace(
+					"/(criminal)/i",
+					"\033[01;31m".'${1}'."\033[0m",
+					$status
+				)
+			);
+			$tid = $tweet->id_str;
+			echo " \033[01;37m@${nick}\033[0m said: \033[01;32m\"${coloured_status}\033[0m\"\n     (\033[38;5;14m\033[4mhttps://twitter.com/${nick}/status/${tid}\033[0m)\n\n";
+		}
 	}
 }
 
