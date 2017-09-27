@@ -17,9 +17,9 @@
             #hill {
                 background-image: url(images/bg.png);
                 background-color: gray;
-                background-size: 500px;
+                background-size: 1000px;
                 background-repeat: no-repeat;
-                width: 500px;
+                width: 1000px;
                 height: 340px;
             }
             body {
@@ -48,6 +48,7 @@
             }
             h2 {
                 font-size: 30pt;
+                margin-bottom: 100px;
             }
             #spiderweb {
                 position: absolute;
@@ -59,17 +60,25 @@
                 width: 1200px;
                 margin: 0 auto 111px auto;
             }
-            .grave {
-                width: 200px;
-                height: 170px;
-                float: left;
-                background-image: url(images/cat_grave.png);
-                background-position-x: 7px;
-            }
             .nickname {
                 margin-top: 50px;
                 font-weight: bolder;
                 color: #444;
+                transform: perspective( 200px ) rotateY( -16deg ) rotateZ(3deg);
+                text-align: center;
+                padding-right: 25px;
+            }
+            a.grave:hover {
+                text-decoration: none;
+            }
+            a.grave {
+                width: 140px;
+                height: 126px;
+                float: left;
+                background-image: url(images/cat_grave.png);
+                padding: 25px 0px 0px 0px;
+                background-position-x: -16px;
+                margin: 0px 0px 40px 40px;
             }
         </style>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

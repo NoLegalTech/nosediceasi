@@ -18,7 +18,7 @@ $(function() {
             var tweet = tweets[id];
             $('#graves').append(
                 '<a class="grave" target="_blank" href="https://twitter.com/' + tweet.nick + '/status/' + tweet.id + '">' +
-                    '<div class="nickname">' + tweet.nick + '</div>' +
+                    '<div class="nickname">@' + tweet.nick + '</div>' +
                 '</a>'
             );
         }
