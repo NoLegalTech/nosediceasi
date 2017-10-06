@@ -14,6 +14,11 @@ $(function() {
 
     database.ref('tweets').on('value', function(snapshot) {
         var tweets = snapshot.val();
+        var count = 0;
+        for (id in tweets) {
+            count++;
+        }
+        $('span#count').text(count);
         for (id in tweets) {
             var tweet = tweets[id];
             $('#graves').append(

@@ -44,7 +44,7 @@
             }
             h1 {
                 font-size: 36pt;
-                margin-bottom: 110px;
+                margin-bottom: 0px;
             }
             h2 {
                 font-size: 30pt;
@@ -81,6 +81,17 @@
                 margin: 0px 0px 40px 40px;
                 background-size: 145px;
             }
+            div.counter {
+                font-size: 40px;
+                color: gray;
+                font-family: 'Amatic SC', cursive;
+                margin-bottom: 90px;
+            }
+            span#count {
+                color: #b70000;
+                font-weight: bold;
+                font-size: 60px;
+            }
         </style>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -92,6 +103,7 @@
         </header>
         <div id="sheet">
             <h1> Bienvenido al cementerio de gatitos </h1>
+            <div class="counter">(En este momento tenemos <span id="count"></span> residentes)</div>
             <h2> Has llegado aqu&iacute; porque no has aprendido a&uacute;n que no se dice querella criminal. Querella criminal no existe. Es como pedo del culo. Ya se sabe que es del culo, ya se sabe que es criminal. Fin de la historia. </h2>
 
             <img id= "spiderweb" src="images/tela.png"/>
