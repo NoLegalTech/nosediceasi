@@ -15,7 +15,7 @@ function deployFolder(){
 	prompt
         mkdir $remote_folder
 	cd $remote_folder
-	mput *.jpg *.html *.png
+	mput *.jpg *.html *.png *.json *.js
 	bye
 EOT
 
