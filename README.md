@@ -4,13 +4,13 @@
 
 0) Clone this repo (you should know how :grimacing:)
 
-1) Set up your config file by copying it from config.php.ini:
+1) Set up your config file by copying it from bot/config.php.ini:
 
 ```bash
-    cp config.php.ini config.php
+    cp bot/config.php.ini bot/config.php
 ```
 
-2) Edit the config.php file and replace all `FILL_ME` values with the appropriate values.
+2) Edit the bot/config.php file and replace all `FILL_ME` values with the appropriate values.
 
 3) Update project dependencies:
 
