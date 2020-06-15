@@ -39,10 +39,10 @@ function show_last_killed_cats($config) {
     $requestMethod = 'GET';
 
     $twitter = new TwitterAPIExchange(array(
-        'oauth_access_token' => $config['oauth']['access_token'],
-        'oauth_access_token_secret' => $config['oauth']['access_token_secret'],
-        'consumer_key' => $config['oauth']['consumer_key'],
-        'consumer_secret' => $config['oauth']['consumer_secret']
+        'oauth_access_token' => $config['twitter']['access_token'],
+        'oauth_access_token_secret' => $config['twitter']['access_token_secret'],
+        'consumer_key' => $config['twitter']['consumer_key'],
+        'consumer_secret' => $config['twitter']['consumer_secret']
     ));
     $results = json_decode($twitter->setGetfield($getfield)
         ->buildOauth($url, $requestMethod)
