@@ -1,0 +1,64 @@
+#!/bin/bash
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+declare -a migrations
+migration=all
+
+function migrate {
+    migrationType=$1
+    migrationNumber=$2
+
+    number=$(printf "%04d\n" $migrationNumber)
+
+    echo "Running migration ${number} [${migrationType}]";
+
+    [[ $migrationType == "up" ]] && {
+        mysql --defaults-extra-file=${script_dir}/config < ${script_dir}/migrations/${number}.sql
+    }
+
+    [[ $migrationType == "down" ]] && {
+        mysql --defaults-extra-file=${script_dir}/config < ${script_dir}/migrations/${number}.down.sql
+    }
+}
+
+function parse_args {
+    migration=$1
+    [[ $migration == "" ]] && {
+        migration=all
+    }
+}
+
+function get_all_migrations {
+    list=$(ls $script_dir/migrations/*.sql)
+    for file in $list
+    do
+        filename=$(echo ${file##*/})
+        number=${filename%.*}
+        echo ${filename} | grep ".down." > /dev/null || migrations+=(${number})
+    done
+}
+
+function get_all_migrations_reversed {
+    list=$(ls $script_dir/migrations/*.sql | sort -nr)
+    for file in $list
+    do
+        filename=$(echo ${file##*/})
+        number=${filename%.*}
+        echo ${filename} | grep ".down." > /dev/null || migrations+=(${number})
+    done
+}
+
+function run_migrations {
+    migrationType=$1
+
+    [[ "$migration" == "all" ]] && {
+        for number in "${migrations[@]}"
+        do
+            migrate $migrationType $number
+        done
+    }
+
+    [[ "$migration" == "all" ]] || {
+        migrate $migrationType $migration
+    }
+}
