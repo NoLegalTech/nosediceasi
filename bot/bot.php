@@ -2,35 +2,26 @@
 require_once('TwitterAPIExchange.php');
 require __DIR__.'/vendor/autoload.php';
 
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
-
-function get_db() {
-    $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase-credentials.json');
-
-    $firebase = (new Factory)
-        ->withServiceAccount($serviceAccount)
-        ->withDatabaseUri('https://nosediceasi-569f3.firebaseio.com')
-        ->create();
-
-    return $firebase->getDatabase();
-}
-
-function get_all_tweets_in_db() {
-    return get_db()->getReference('tweets')->getValue();
-}
-
-function store_tweet_in_db($tid, $nick) {
-    get_db()->getReference("tweets")
-        ->push([
-            'id'      => $tid,
-            'nick'    => $nick,
-            'message' => ""
-        ]);
-}
-
 function show_db($config) {
-    print_r(get_all_tweets_in_db());
+    $mysqli = new mysqli(
+        $config['database']['host'],
+        $config['database']['user'],
+        $config['database']['pass'],
+        $config['database']['db']
+    );
+    if ($mysqli->connect_errno) {
+        echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    }
+
+    $res = $mysqli->query("SELECT * FROM tweets;");
+
+    if (!$res) {
+        echo "Query failed: (";
+    }
+
+    while ($row = $res->fetch_assoc()) {
+        echo "https://twitter.com/${row['nick']}/status/${row['tid']}\n";
+    }
 }
 
 function show_last_killed_cats($config) {
@@ -102,9 +93,11 @@ function reply($config, $nick, $tid) {
         'consumer_key' => $config['oauth']['consumer_key'],
         'consumer_secret' => $config['oauth']['consumer_secret']
     ));
+    /* TODO uncomment to actually reply the tweet
     echo $twitter->buildOauth($url, $requestMethod)
         ->setPostfields($postfields)
         ->performRequest();
+     */
 
     store_tweet_in_db($tid, $nick);
 }
