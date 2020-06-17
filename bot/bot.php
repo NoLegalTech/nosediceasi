@@ -2,7 +2,7 @@
 require_once('TwitterAPIExchange.php');
 require __DIR__.'/vendor/autoload.php';
 
-function show_db($config) {
+function do_query($config, $query, $callback_row = null) {
     $mysqli = new mysqli(
         $config['database']['host'],
         $config['database']['user'],
@@ -13,15 +13,27 @@ function show_db($config) {
         echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
     }
 
-    $res = $mysqli->query("SELECT * FROM tweets;");
+    $res = $mysqli->query($query);
 
     if (!$res) {
         echo "Query failed: (";
     }
 
-    while ($row = $res->fetch_assoc()) {
-        echo "https://twitter.com/${row['nick']}/status/${row['tid']}\n";
+    if (!is_null($callback_row)) {
+        while ($row = $res->fetch_assoc()) {
+            $callback_row($row);
+        }
     }
+}
+
+function show_db($config) {
+    do_query(
+        $config,
+        "SELECT * FROM tweets;",
+        function($row) {
+            echo "https://twitter.com/${row['nick']}/status/${row['tid']}\n";
+        }
+    );
 }
 
 function show_last_killed_cats($config) {
@@ -65,16 +77,17 @@ function show_commands($script) {
 }
 
 function reply($config, $nick, $tid) {
-    $all_tweets = get_all_tweets_in_db();
+    $alreadyProcessed = false;
 
-    $found = false;
-    foreach($all_tweets as $tweet) {
-        if ($tweet['id'] == $tid) {
-            $found = true;
+    do_query(
+        $config,
+        "SELECT * FROM tweets WHERE tid = ${tid};",
+        function($row) use (&$alreadyProcessed) {
+            $alreadyProcessed = true;
         }
-    }
+    );
 
-    if ($found) {
+    if ($alreadyProcessed) {
         echo "Won't reply. Already replied.";
         return;
     }
@@ -88,18 +101,20 @@ function reply($config, $nick, $tid) {
     );
 
     $twitter = new TwitterAPIExchange(array(
-        'oauth_access_token' => $config['oauth']['access_token'],
-        'oauth_access_token_secret' => $config['oauth']['access_token_secret'],
-        'consumer_key' => $config['oauth']['consumer_key'],
-        'consumer_secret' => $config['oauth']['consumer_secret']
+        'oauth_access_token' => $config['twitter']['access_token'],
+        'oauth_access_token_secret' => $config['twitter']['access_token_secret'],
+        'consumer_key' => $config['twitter']['consumer_key'],
+        'consumer_secret' => $config['twitter']['consumer_secret']
     ));
-    /* TODO uncomment to actually reply the tweet
+
     echo $twitter->buildOauth($url, $requestMethod)
         ->setPostfields($postfields)
         ->performRequest();
-     */
 
-    store_tweet_in_db($tid, $nick);
+    do_query(
+        $config,
+        "INSERT INTO tweets(tid, nick) VALUES('${tid}', '${nick}');"
+    );
 }
 
 $script = $argv[0];
