@@ -4,35 +4,36 @@
 
 0) Clone this repo (you should know how :grimacing:)
 
-1) Set up your config file by copying it from bot/config.php.ini:
+1) Set up your config files by copying them from bot/config.php.ini and db/config.ini:
 
 ```bash
     cp bot/config.php.ini bot/config.php
+    cp db/config.ini bot/config
 ```
 
-2) Edit the bot/config.php file and replace all `FILL_ME` values with the appropriate values.
+2) Install MySQL if you don't have it, and create a user with permission to create databases
 
-3) Update project dependencies:
+3) Edit the bot/config.php and the db/config files and replace all `FILL_ME` values with the appropriate values.
+
+4) Run database migrations:
+
+```bash
+    db/up
+```
+
+4) Update project dependencies:
 
 ```bash
     composer install
 ```
 
-4) See last killed cats:
+5) See last killed cats:
 
 ```bash
     php bot.php cats
 ```
 
-5) Set up your firebase config file by copying it from firebase-credentials.json.ini:
-
-```bash
-    cp firebase-credentials.json.ini firebase-credentials.json
-```
-
-6) Edit the firebase-credentials.json file and replace all `FILL_ME` values with the appropriate values.
-
-7) Reply to one of those killers:
+6) Reply to one of those killers:
 
 ```bash
     php bot.php reply <nick> <tweet_id>
