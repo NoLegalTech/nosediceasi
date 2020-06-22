@@ -4,27 +4,27 @@
 
 
 function deployFolder(){
-	local_folder=$1
-	remote_folder="www/querella_criminal/$local_folder"
+    local_folder=$1
+    remote_folder="www/querella_criminal/$local_folder"
 
-	cd $local_folder
+    cd $local_folder
 
-	ftp -n -v $HOST << EOT
-	ascii
-	user $USER $PASSWD
-	prompt
+    ftp -n -v $HOST << EOT
+    ascii
+    user $USER $PASSWD
+    prompt
         mkdir $remote_folder
-	cd $remote_folder
-	mput *.jpg *.html *.png *.json *.js
-	bye
+    cd $remote_folder
+    mput *.jpg *.html *.png *.json *.js
+    bye
 EOT
 
- 	cd -
+    cd -
 }
 
 folders=$(find . -type d)
 
 for folder in $folders
 do
-	deployFolder $folder
+    deployFolder $folder
 done

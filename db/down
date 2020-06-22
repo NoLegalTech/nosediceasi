@@ -1,0 +1,8 @@
+#!/bin/bash
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. ${script_dir}/migrations-functions
+
+parse_args $*
+get_all_migrations_reversed
+run_migrations down

@@ -1,3 +1,33 @@
+<?php
+
+    $config = require __DIR__ . '/../bot/config.php';
+
+    $mysqli = new mysqli(
+        $config['database']['host'],
+        $config['database']['user'],
+        $config['database']['pass'],
+        $config['database']['db']
+    );
+    if ($mysqli->connect_errno) {
+        echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    }
+
+    $res = $mysqli->query("SELECT * FROM tweets ORDER BY id DESC;");
+
+    if (!$res) {
+        echo "Query failed: (";
+    }
+
+    $dead_cats = array();
+
+    while ($row = $res->fetch_assoc()) {
+        $dead_cats []= [
+            "nick" => $row['nick'],
+            "url"  => "https://twitter.com/${row['nick']}/status/${row['tid']}"
+        ];
+    }
+
+?>
 <html>
     <head>
         <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Freckle+Face|Fredericka+the+Great|Zilla+Slab+Highlight" rel="stylesheet">
@@ -94,8 +124,6 @@
             }
         </style>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     </head>
     <body>
         <header>
@@ -103,16 +131,21 @@
         </header>
         <div id="sheet">
             <h1> Bienvenido al cementerio de gatitos </h1>
-            <div class="counter">(En este momento tenemos <span id="count"></span> residentes)</div>
+            <div class="counter">(En este momento tenemos <span id="count"> <? echo count($dead_cats); ?> </span> residentes)</div>
             <h2> Has llegado aqu&iacute; porque no has aprendido a&uacute;n que no se dice querella criminal. Querella criminal no existe. Es como pedo del culo. Ya se sabe que es del culo, ya se sabe que es criminal. Fin de la historia. </h2>
 
             <img id= "spiderweb" src="images/tela.png"/>
 
             <div id="graves">
+                <?php
+                    foreach ($dead_cats as $cat) {
+                        echo "<a class='grave' target='_blank' href='${cat['url']}'>";
+                        echo "   <div class='nickname'>@${cat['nick']}</div>";
+                        echo "</a>";
+                    }
+                ?>
             </div>
-        </div>      
-		<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
-        <script src="main.js"></script>
+        </div>
     </body>
 </html>
 
